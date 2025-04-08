@@ -62,11 +62,11 @@ RUN python3 -m pip install -U \
         flake8-deprecated \
         flake8-docstrings \
         flake8-import-order \
-        flake8-quotes \
+        flake8-quotes
+RUN python3 -m pip install -U \
         matplotlib \
-        pandas \
-        rosbags \
-        boto3 \
+        pandas
+RUN python3 -m pip install -U \
         setuptools==65.7.0
 
 # Install ROS 2 Humble
@@ -126,6 +126,10 @@ apt-get update && apt-get install -y \
     ros-humble-vision-opencv \
     ros-humble-vision-msgs \
     ros-humble-vision-msgs-rviz-plugins
+
+RUN python3 -m pip install -U \
+        boto3 
+#rosbags \
 
 # Setup rosdep
 COPY rosdep/extra_rosdeps.yaml /etc/ros/rosdep/sources.list.d/nvidia-isaac.yaml
@@ -328,3 +332,10 @@ RUN echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" | s
 # Store list of packages (must be last)
 RUN mkdir -p /opt/nvidia/isaac_ros_dev_base && dpkg-query -W | sort > /opt/nvidia/isaac_ros_dev_base/ros2_humble-end-packages.csv
 
+# Automatically install isaac-ros-example packages
+RUN --mount=type=cache,target=/var/cache/apt \
+apt-get update && apt-get install -y \
+    ros-humble-isaac-ros-examples \
+    ros-humble-isaac-ros-yolov8 \
+    ros-humble-isaac-ros-dnn-image-encoder \
+    ros-humble-isaac-ros-tensor-rt
